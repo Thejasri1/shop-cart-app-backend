@@ -86,7 +86,7 @@ app.post("/login", async (req, res) => {
   }
 });
 //Get API for displaying all the products
-app.get("/products", async (req, res) => {
+app.get("/products", middleware, async (req, res) => {
   try {
     let exists = userModel.findById(req.user.id);
     if (!exists) {
