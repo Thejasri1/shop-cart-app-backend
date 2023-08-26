@@ -2,7 +2,9 @@
 const mongoose = require("mongoose");
 const userModel = require("./Models/UserModel");
 const productsModel = require("./Models/ProductsModel");
+const cartModel = require("./Models/CartModel");
 const middleware = require("./middleware");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -11,6 +13,7 @@ const app = express();
 
 //midlewares
 app.use(express.json());
+app.use(cors());
 
 //Mongoose connection
 const URL = process.env.DB_URL;
@@ -50,6 +53,7 @@ app.post("/register", async (req, res) => {
       return res.status(200).json({ message: "Registered Successfully" });
     }
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ message: "Register Failed" });
   }
 });
@@ -82,6 +86,7 @@ app.post("/login", async (req, res) => {
       }
     });
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ message: "Login Failed" });
   }
 });
@@ -105,15 +110,17 @@ app.post("/product", async (req, res) => {
     await productsModel.create(req.body);
     return res.status(200).json({ message: "Produt added" });
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ message: "Produts are not added" });
   }
 });
 //Update Product
 app.patch("/product/:id", async (req, res) => {
   try {
-    await productsModel.findByIdAndUpdate(req.param.id, req.body);
+    await productsModel.findByIdAndUpdate(req.params.id, req.body);
     return res.status(200).json({ message: "Produt details updated" });
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ message: "Produt details are not updated" });
   }
 });
@@ -123,12 +130,73 @@ app.delete("/:id", async (req, res) => {
     await productsModel.findByIdAndDelete(req.params.id);
     return res.status(200).json({ message: "Produt is deleted" });
   } catch (e) {
+    console.log(e);
     return res.status(200).json({ message: "Produt is not deleted" });
   }
 });
+app.get("/cart", async (req, res) => {
+  try {
+    const cartProducts = await cartModel.find({});
+    return res.status(200).send(cartProducts);
+  } catch (e) {
+    console.log(e);
+  }
+});
 //Add Cart Post API
+app.post("/cart", async (req, res) => {
+  try {
+    await cartModel.create(req.body);
+    return res.status(200).json({ message: "Product added to the cart" });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ message: "Product not added to the cart" });
+  }
+});
 //Delete from Cart API
-
+app.delete("/cart/:id", async (req, res) => {
+  try {
+    await cartModel.findByIdAndDelete(req.params.id);
+    return res
+      .status(200)
+      .json({ message: "Product is removed from the cart" });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(200)
+      .json({ message: "Product is not removed from the cart" });
+  }
+});
+// {
+// $match: {
+// $or: [
+//   { productprice: { $eq: 1000 } },
+//   { productprice: { $lt: 20000 } },
+//   { productprice: { $gt: 500 } },
+// ],
+// },
+// },
+//search APIs
+app.get("/searchbyproduct/:product", async (req, res) => {
+  try {
+    const price = Number(req.params.product);
+    const searchList = await productsModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { productprice: { $eq: price } },
+            { productname: { $eq: req.params.product } },
+            { productrating: { $eq: Number(req.params.product) } },
+            { producttype: { $eq: req.params.product } },
+            { productdiscount: { $eq: Number(req.params.product) } },
+          ],
+        },
+      },
+    ]);
+    return res.status(200).send(searchList);
+  } catch (e) {
+    console.log(e);
+  }
+});
 //Order Get API
 //Order POST API
 // update order data API

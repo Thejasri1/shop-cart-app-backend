@@ -8,7 +8,6 @@ module.exports = async (req, res, next) => {
       return res.status(404).json({ message: "Token not existed" });
     } else {
       const decode = jwt.verify(token, "jwtSecret");
-      console.log("decode", decode.user);
       req.user = decode.user;
       next();
     }
