@@ -27,7 +27,15 @@ mongoose.connect(URL).then((db, err) => {
 });
 
 let regex = /[a-z0-9]+@[a-z]+\.[a-z]/;
-
+//get Users API
+app.get("/users", async (req, res) => {
+  try {
+    const usersRes = await userModel.find({});
+    return res.status(200).send(usersRes);
+  } catch (e) {
+    console.log(e);
+  }
+});
 //register API
 app.post("/register", async (req, res) => {
   try {
@@ -166,15 +174,7 @@ app.delete("/cart/:id", async (req, res) => {
       .json({ message: "Product is not removed from the cart" });
   }
 });
-// {
-// $match: {
-// $or: [
-//   { productprice: { $eq: 1000 } },
-//   { productprice: { $lt: 20000 } },
-//   { productprice: { $gt: 500 } },
-// ],
-// },
-// },
+
 //search APIs
 app.get("/searchbyproduct/:product", async (req, res) => {
   try {
@@ -197,10 +197,6 @@ app.get("/searchbyproduct/:product", async (req, res) => {
     console.log(e);
   }
 });
-//Order Get API
-//Order POST API
-// update order data API
-//Delete order data API
 
 //connecting to the server
 const port = process.env.PORT;
