@@ -2,7 +2,9 @@
 const mongoose = require("mongoose");
 const userModel = require("./Models/UserModel");
 const productsModel = require("./Models/ProductsModel");
+const addressModel = require("./Models/AddressModel");
 const cartModel = require("./Models/CartModel");
+const soldProductsModel = require("./Models/soldProductModel");
 const middleware = require("./middleware");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -201,7 +203,62 @@ app.get("/searchbyproduct/:product", async (req, res) => {
     console.log(e);
   }
 });
-
+//get address API
+app.get("/address", async (req, res) => {
+  try {
+    const addressRes = await addressModel.find({});
+    return res.status(200).send(addressRes);
+  } catch (e) {
+    console.log(e);
+  }
+});
+//post Address api
+app.post("/address", async (req, res) => {
+  try {
+    await addressModel.create(req.body);
+    return res.status(200).json({ message: "Address added" });
+  } catch (e) {
+    console.log(e);
+  }
+});
+//Update address API
+app.patch("/address/:id", async (req, res) => {
+  try {
+    await addressModel.findByIdAndUpdate(req.params.id, req.body);
+    return res.status(200).json({ message: "address details updated" });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ message: "address details are not updated" });
+  }
+});
+//Delete address API
+app.delete("/address/:id", async (req, res) => {
+  try {
+    await addressModel.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: "Adress removed" });
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({ message: "Adress not removed" });
+  }
+});
+//get sold products API
+app.get("/soldproducts", async (req, res) => {
+  try {
+    const addressRes = await soldProductsModel.find({});
+    return res.status(200).send(addressRes);
+  } catch (e) {
+    console.log(e);
+  }
+});
+//post sold products api
+app.post("/soldproduct", async (req, res) => {
+  try {
+    await soldProductsModel.create(req.body);
+    return res.status(200).json({ message: "Address added" });
+  } catch (e) {
+    console.log(e);
+  }
+});
 //connecting to the server
 const port = process.env.PORT;
 app.listen(port);
