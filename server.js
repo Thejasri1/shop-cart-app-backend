@@ -16,7 +16,8 @@ app.use(express.json());
 app.use(cors());
 
 //Mongoose connection
-const URL = process.env.DB_URL;
+const env = process.env.NODE_ENV || "development";
+const URL = env === "development" ? process.env.DB_URL : process.env.PROD_URL;
 mongoose
   .connect(URL)
   .then((db, err) => {
