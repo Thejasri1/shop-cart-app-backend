@@ -17,14 +17,17 @@ app.use(cors());
 
 //Mongoose connection
 const URL = process.env.DB_URL;
-mongoose.connect(URL).then((db, err) => {
-  try {
-    if (err) throw err;
-    console.log("Connected with DB");
-  } catch (e) {
-    console.log(e);
-  }
-});
+mongoose
+  .connect(URL)
+  .then((db, err) => {
+    try {
+      if (err) throw err;
+      console.log("Connected with DB");
+    } catch (e) {
+      console.log(e);
+    }
+  })
+  .catch((err) => console.log(err));
 
 let regex = /[a-z0-9]+@[a-z]+\.[a-z]/;
 //get Users API
