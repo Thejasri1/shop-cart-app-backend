@@ -7,7 +7,6 @@ const soldProdSchema = new mongoose.Schema({
     trim: true,
     require: true,
   },
-
   productprice: {
     type: Number,
     trim: true,
@@ -38,6 +37,10 @@ const soldProdSchema = new mongoose.Schema({
     type: String,
     trim: true,
     require: true,
+  },
+  quantity: {
+    type: Number,
+    trim: true,
   },
 });
 const productConnection = new mongoose.model(

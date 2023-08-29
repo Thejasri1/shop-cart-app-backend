@@ -104,6 +104,24 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ message: "Login Failed" });
   }
 });
+app.patch("/register/:id", async (req, res) => {
+  try {
+    const { password, confirmpassword } = req.body;
+    if (password === "") {
+      return res.status(400).json({ message: "Password is required" });
+    } else if (confirmpassword === "") {
+      return res.status(400).json({ message: "Confirm Password is required" });
+    } else if (password !== confirmpassword) {
+      return res.status(400).json({ message: "Password not matched" });
+    } else {
+      await userModel.findByIdAndUpdate(req.params.id, req.body);
+      return res.status(200).json({ message: "password updated" });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ message: "password not updated" });
+  }
+});
 //Get API for displaying all the products
 app.get("/products", middleware, async (req, res) => {
   try {

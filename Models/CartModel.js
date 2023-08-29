@@ -41,7 +41,10 @@ const productSchema = new mongoose.Schema({
   productimage: {
     type: String,
     trim: true,
-    require: true,
+  },
+  quantity: {
+    type: Number,
+    trim: true,
   },
 });
 const cartConnection = new mongoose.model("cartList", productSchema);
